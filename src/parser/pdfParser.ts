@@ -175,6 +175,7 @@ function parseMarkdownTable(text: string, _lines: string[]): Course[] {
         id: `${entry.code}-${entry.sectionId}-${entry.group}-${entry.day}-${entry.startTime}`,
         type: entry.sessionType,
         group: entry.group,
+        teacher: entry.teacher,
         schedule: {
           day: entry.day,
           startTime: entry.startTime,
@@ -187,6 +188,9 @@ function parseMarkdownTable(text: string, _lines: string[]): Course[] {
       };
       
       section.sessions.push(session);
+
+      const sectionTeachers = [...new Set(section.sessions.map(s => s.teacher).filter(Boolean))]
+      section.teacher = sectionTeachers.length === 1 ? sectionTeachers[0] : 'Multiple professors'
     }
   }
   
@@ -218,7 +222,7 @@ function parseBlock(block: { code: string; lines: string[] }): ParsedEntry[] {
   
   // Extract common fields
   const courseName = COURSE_NAMES[block.code] || extractCourseName(block.lines);
-  const teacher = extractTeacher(block.lines);
+  const teacher = extractTeacher(block.code, block.lines);
   const type: CourseType = fullText.includes('Electivo') ? 'Electivo' : 'Obligatorio';
   const modality = extractModality(fullText);
   const sectionId = extractSectionId(fullText);
@@ -273,23 +277,57 @@ function extractCourseName(lines: string[]): string {
   return 'Unknown Course';
 }
 
-function extractTeacher(lines: string[]): string {
-  const text = lines.join(' ');
-  
-  // Look for teacher name pattern after course name
-  // Teachers usually have patterns like "LastName, FirstName" or just "Name Name"
-  const teacherMatch = text.match(/[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*,\s*[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*/);
-  if (teacherMatch) {
-    return teacherMatch[0].trim();
+function extractTeacher(code: string, lines: string[]): string {
+  const firstLine = lines[0] ?? '';
+  const curriculumMatch = firstLine.match(/(CS|BI|ME|EL|EN|GE|MT|HH|AM|IN)-\d{4}-\d/);
+  const teacherParts: string[] = [];
+  const courseName = COURSE_NAMES[code] ?? '';
+
+  if (curriculumMatch) {
+    const prefix = firstLine.slice(0, firstLine.indexOf(curriculumMatch[0]));
+    const withoutCode = prefix.replace(COURSE_CODE_PATTERN, '').trim();
+    const split = withoutCode.split(/\s{2,}/).map((part) => part.trim()).filter(Boolean);
+    if (split.length > 1) {
+      teacherParts.push(...split.slice(1));
+    }
   }
-  
-  // Alternative: look for capitalized names
-  const nameMatch = text.match(/[A-ZÁÉÍÓÚÑ][a-záéíóúñü]+\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñü]+(?:\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñü]+)*/);
-  if (nameMatch) {
-    return nameMatch[0].trim();
+
+  for (const line of lines.slice(1)) {
+    if (line.includes('|') && !line.match(/^\|\s*[-:]+/)) {
+      const cells = line
+        .split('|')
+        .map((cell) => cell.trim())
+        .filter(Boolean);
+
+      if (cells[1] && cells[1] !== '---') {
+        teacherParts.push(cells[1]);
+      }
+      continue;
+    }
+
+    if (!line.includes('|') && !COURSE_CODE_PATTERN.test(line)) {
+      const normalized = line.replace(/\s+/g, ' ').trim();
+      if (!normalized) {
+        continue;
+      }
+
+      const isCourseSuffix = courseName
+        ? courseName.toLowerCase().includes(normalized.toLowerCase())
+        : false;
+
+      if (!isCourseSuffix) {
+        teacherParts.push(normalized);
+      }
+    }
   }
-  
-  return 'Unknown';
+
+  const teacher = teacherParts
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .replace(/\s+,/g, ',')
+    .trim();
+
+  return teacher || 'Unknown';
 }
 
 function extractModality(text: string): Modality {

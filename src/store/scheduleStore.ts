@@ -1,87 +1,123 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import type { Course, ParsedSchedule, SelectedSession, ScheduleConflict } from '../types';
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+import { buildSelectedConfiguration } from '../utils/courseConfigurations'
+import { detectAllConflicts } from '../utils/conflictDetection'
+import type {
+  Course,
+  ParsedSchedule,
+  ScheduleConflict,
+  Section,
+  SelectedConfiguration,
+  SessionBundle,
+} from '../types'
 
 interface ScheduleState {
-  // Data
-  parsedSchedule: ParsedSchedule | null;
-  selectedSessions: SelectedSession[];
-  conflicts: ScheduleConflict[];
-  
-  // Actions
-  setParsedSchedule: (schedule: ParsedSchedule | null) => void;
-  addSelectedSession: (session: SelectedSession) => void;
-  removeSelectedSession: (courseId: string, sessionId: string) => void;
-  clearSelectedSessions: () => void;
-  setConflicts: (conflicts: ScheduleConflict[]) => void;
-  
-  // Getters
-  getCourses: () => Course[];
-  getSelectedCourseIds: () => string[];
-  hasConflict: (session: SelectedSession) => boolean;
+  parsedSchedule: ParsedSchedule | null
+  selectedConfigurations: SelectedConfiguration[]
+  conflicts: ScheduleConflict[]
+  setParsedSchedule: (schedule: ParsedSchedule | null) => void
+  toggleBundleSelection: (course: Course, section: Section, bundle: SessionBundle) => void
+  removeSelectedCourse: (courseId: string) => void
+  clearSelectedConfigurations: () => void
+  getCourses: () => Course[]
+  getSelectedCourseIds: () => string[]
+}
+
+function buildNextSelection(
+  current: SelectedConfiguration | undefined,
+  course: Course,
+  section: Section,
+  bundle: SessionBundle,
+) {
+  if (!current || current.sectionId !== section.id) {
+    return buildSelectedConfiguration(course, section, [bundle])
+  }
+
+  const alreadySelected = current.bundles.some((item) => item.id === bundle.id)
+  let nextBundles = current.bundles.filter((item) => item.type !== bundle.type)
+
+  if (!alreadySelected) {
+    nextBundles = [...nextBundles, bundle]
+  }
+
+  if (nextBundles.length === 0) {
+    return null
+  }
+
+  return buildSelectedConfiguration(course, section, nextBundles)
 }
 
 export const useScheduleStore = create<ScheduleState>()(
   persist(
     (set, get) => ({
-      // Initial state
       parsedSchedule: null,
-      selectedSessions: [],
+      selectedConfigurations: [],
       conflicts: [],
-      
-      // Actions
-      setParsedSchedule: (schedule) => set({ 
-        parsedSchedule: schedule,
-        selectedSessions: [],
-        conflicts: []
-      }),
-      
-      addSelectedSession: (session) => {
-        const { selectedSessions } = get();
-        // Remove any existing session for this course
-        const filtered = selectedSessions.filter(
-          (s) => s.courseId !== session.courseId
-        );
-        set({ selectedSessions: [...filtered, session] });
-      },
-      
-      removeSelectedSession: (courseId, sessionId) => {
-        const { selectedSessions } = get();
+
+      setParsedSchedule: (schedule) =>
         set({
-          selectedSessions: selectedSessions.filter(
-            (s) => !(s.courseId === courseId && s.session.id === sessionId)
-          )
-        });
+          parsedSchedule: schedule,
+          selectedConfigurations: [],
+          conflicts: [],
+        }),
+
+      toggleBundleSelection: (course, section, bundle) => {
+        const current = get().selectedConfigurations.find((item) => item.courseId === course.id)
+        const nextSelection = buildNextSelection(current, course, section, bundle)
+
+        const nextConfigurations = [
+          ...get().selectedConfigurations.filter((item) => item.courseId !== course.id),
+          ...(nextSelection ? [nextSelection] : []),
+        ]
+
+        set({
+          selectedConfigurations: nextConfigurations,
+          conflicts: detectAllConflicts(nextConfigurations),
+        })
       },
-      
-      clearSelectedSessions: () => set({ selectedSessions: [], conflicts: [] }),
-      
-      setConflicts: (conflicts) => set({ conflicts }),
-      
-      // Getters
+
+      removeSelectedCourse: (courseId) => {
+        const nextConfigurations = get().selectedConfigurations.filter(
+          (item) => item.courseId !== courseId,
+        )
+
+        set({
+          selectedConfigurations: nextConfigurations,
+          conflicts: detectAllConflicts(nextConfigurations),
+        })
+      },
+
+      clearSelectedConfigurations: () =>
+        set({ selectedConfigurations: [], conflicts: [] }),
+
       getCourses: () => get().parsedSchedule?.courses || [],
-      
-      getSelectedCourseIds: () => {
-        return [...new Set(get().selectedSessions.map((s) => s.courseId))];
-      },
-      
-      hasConflict: (session) => {
-        return get().conflicts.some(
-          (c) => 
-            c.session1.session.id === session.session.id || 
-            c.session2.session.id === session.session.id
-        );
-      }
+
+      getSelectedCourseIds: () =>
+        [...new Set(get().selectedConfigurations.map((item) => item.courseId))],
     }),
     {
       name: 'utec-schedule-storage',
+      version: 3,
+      migrate: (persistedState: unknown) => {
+        const state = persistedState as {
+          parsedSchedule?: ParsedSchedule | null
+        }
+
+        return {
+          parsedSchedule: null,
+          selectedConfigurations: [],
+          conflicts: [],
+        }
+      },
       partialize: (state) => ({
-        parsedSchedule: state.parsedSchedule ? {
-          ...state.parsedSchedule,
-          rawText: '' // Don't persist raw text to avoid storage issues
-        } : null,
-        selectedSessions: state.selectedSessions
-      })
-    }
-  )
-);
+        parsedSchedule: state.parsedSchedule
+          ? {
+              ...state.parsedSchedule,
+              rawText: '',
+            }
+          : null,
+        selectedConfigurations: state.selectedConfigurations,
+      }),
+    },
+  ),
+)

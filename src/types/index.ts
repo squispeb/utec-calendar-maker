@@ -19,6 +19,7 @@ export interface Session {
   id: string;
   type: SessionType;
   group: string;
+  teacher: string;
   schedule: Schedule;
   location: string;
   vacancies: number;
@@ -55,18 +56,34 @@ export interface ParsedSchedule {
   rawText: string;
 }
 
-export interface SelectedSession {
+export interface SessionBundle {
+  id: string;
+  type: SessionType;
+  group: string;
+  teacher: string;
+  sessions: Session[];
+}
+
+export interface SelectedConfiguration {
+  id: string;
   courseId: string;
   courseCode: string;
   courseName: string;
   sectionId: number;
   teacher: string;
-  session: Session;
+  bundles: SessionBundle[];
+  sessions: Session[];
+  modality: Modality;
+  courseType: CourseType;
+  requiredBundleTypes: SessionType[];
+  isComplete: boolean;
 }
 
 export interface ScheduleConflict {
   type: 'time' | 'week' | 'location';
-  session1: SelectedSession;
-  session2: SelectedSession;
+  selection1: SelectedConfiguration;
+  selection2: SelectedConfiguration;
+  firstSession: Session;
+  secondSession: Session;
   message: string;
 }

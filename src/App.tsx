@@ -11,13 +11,13 @@ const queryClient = new QueryClient();
 
 function App() {
   const parsedSchedule = useScheduleStore((state) => state.parsedSchedule);
-  const selectedSessions = useScheduleStore((state) => state.selectedSessions);
+  const selectedConfigurations = useScheduleStore((state) => state.selectedConfigurations);
   const setParsedSchedule = useScheduleStore((state) => state.setParsedSchedule);
-  const clearSelectedSessions = useScheduleStore((state) => state.clearSelectedSessions);
+  const clearSelectedConfigurations = useScheduleStore((state) => state.clearSelectedConfigurations);
   const [showUpload, setShowUpload] = useState(false);
 
   const handleNewUpload = () => {
-    clearSelectedSessions();
+    clearSelectedConfigurations();
     setParsedSchedule(null);
     setShowUpload(true);
   };
@@ -117,9 +117,9 @@ function App() {
                 <div className="bg-white border border-gray-200 rounded-lg p-4">
                   <h2 className="text-lg font-semibold text-gray-900 mb-4">
                     Your Schedule
-                    {selectedSessions.length > 0 && (
+                    {selectedConfigurations.length > 0 && (
                       <span className="ml-2 text-sm font-normal text-gray-500">
-                        ({selectedSessions.length} sessions selected)
+                        ({selectedConfigurations.length} courses selected)
                       </span>
                     )}
                   </h2>
