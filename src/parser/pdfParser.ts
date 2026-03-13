@@ -1,4 +1,4 @@
-import type { Course, Section, Session, StudentInfo, ParsedSchedule, DayOfWeek, SessionType, Modality, CourseType, Frequency } from '../types';
+import type { Course, Session, StudentInfo, ParsedSchedule, DayOfWeek, SessionType, Modality, CourseType, Frequency } from '../types';
 
 const DAY_MAP: Record<string, DayOfWeek> = {
   'Lun': 'Lun', 'Lunes': 'Lun',

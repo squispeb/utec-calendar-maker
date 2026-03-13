@@ -24,7 +24,7 @@ function compareSessions(a: Session, b: Session) {
   return a.schedule.startTime.localeCompare(b.schedule.startTime)
 }
 
-function deriveTeacherName(sessions: Session[]): string {
+export function deriveTeacherName(sessions: Session[]): string {
   const teachers = [...new Set(sessions.map((session) => session.teacher).filter(Boolean))]
 
   if (teachers.length === 0) {

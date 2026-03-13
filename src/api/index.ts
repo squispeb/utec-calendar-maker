@@ -45,11 +45,7 @@ app.post('/convert-pdf', async (c) => {
     
     // For now, return a placeholder - in production this would use pdf-parse
     // or integrate with a PDF-to-markdown service
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    
-    // Placeholder: In production, use pdf-parse here
-    // const pdfData = await pdfParse(buffer);
+    await file.arrayBuffer();
     
     return c.json({
       success: true,

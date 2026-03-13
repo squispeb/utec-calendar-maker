@@ -11,7 +11,7 @@ import {
 import { useScheduleStore } from '../store/scheduleStore'
 import type { Course, CourseType, Modality, Section, SessionBundle } from '../types'
 import { describeSession } from '../utils/conflictDetection'
-import { getRequiredBundleTypes, getSectionBundles } from '../utils/courseConfigurations'
+import { deriveTeacherName, getRequiredBundleTypes, getSectionBundles } from '../utils/courseConfigurations'
 
 export function CourseBrowser() {
   const courses = useScheduleStore((state) => state.getCourses())
@@ -214,6 +214,9 @@ function SectionBuilder({ section, bundles, requiredTypes, activeBundleIds, onTo
               <div className="grid gap-2">
                 {typeBundles.map((bundle) => {
                   const isSelected = activeBundleIds.includes(bundle.id)
+                  const displayTeacher = bundle.teacher && bundle.teacher !== 'Unknown'
+                    ? bundle.teacher
+                    : deriveTeacherName(bundle.sessions)
 
                   return (
                     <button
@@ -234,7 +237,7 @@ function SectionBuilder({ section, bundles, requiredTypes, activeBundleIds, onTo
                             </span>
                             {isSelected ? <Check className="h-4 w-4 text-blue-600" /> : null}
                           </div>
-                          <p className="mt-2 text-sm font-medium text-gray-700">{bundle.teacher}</p>
+                          <p className="mt-2 text-sm font-medium text-gray-700">{displayTeacher}</p>
                         </div>
                       </div>
 

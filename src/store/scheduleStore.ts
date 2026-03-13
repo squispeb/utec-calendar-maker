@@ -97,12 +97,8 @@ export const useScheduleStore = create<ScheduleState>()(
     }),
     {
       name: 'utec-schedule-storage',
-      version: 3,
-      migrate: (persistedState: unknown) => {
-        const state = persistedState as {
-          parsedSchedule?: ParsedSchedule | null
-        }
-
+      version: 4,
+      migrate: (_persistedState: unknown) => {
         return {
           parsedSchedule: null,
           selectedConfigurations: [],
