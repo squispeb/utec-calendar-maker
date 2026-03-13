@@ -39,6 +39,10 @@ export function PDFUploader({ onUploadSuccess }: PDFUploaderProps) {
 
                 const data = payload.parsed as ParsedSchedule;
 
+                if (payload.meta?.runner) {
+                    console.info(`PDF processed with ${payload.meta.runner}`);
+                }
+
                 if (!data?.courses?.length) {
                     throw new Error(
                         "No encontramos cursos en el PDF que subiste",

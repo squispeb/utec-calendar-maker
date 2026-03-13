@@ -1,0 +1,11 @@
+node_modules
+dist
+dist-ssr
+.git
+.gitignore
+.vscode
+.idea
+*.log
+*.local
+horario_2026-1.pdf
+horario_26-1.pdf
