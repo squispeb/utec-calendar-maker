@@ -250,7 +250,7 @@ export function ScheduleView() {
                 className="border-[var(--color-border)]"
                 style={{ background: "var(--color-page)" }}
             >
-                <PanelHeader>
+                <PanelHeader className="shrink-0">
                     <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--color-primary)]">
                         Selected configurations
                     </p>
@@ -260,87 +260,91 @@ export function ScheduleView() {
                     </p>
                 </PanelHeader>
 
-                <PanelBody
-                    className="flex flex-col"
-                    style={{ gap: "calc(var(--space-gap) * 0.75)" }}
-                >
-                    {selectedConfigurations.map((configuration) => {
-                        const hasConflict = conflicts.some(
-                            (conflict) =>
-                                conflict.selection1.id === configuration.id ||
-                                conflict.selection2.id === configuration.id,
-                        );
-                        const color =
-                            courseColorMap.get(configuration.courseId) ??
-                            COURSE_COLOR_PALETTE[0];
+                <PanelBody className="min-h-0 max-h-[28rem] overflow-y-auto">
+                    <div
+                        className="flex flex-col"
+                        style={{ gap: "calc(var(--space-gap) * 0.75)" }}
+                    >
+                        {selectedConfigurations.map((configuration) => {
+                            const hasConflict = conflicts.some(
+                                (conflict) =>
+                                    conflict.selection1.id ===
+                                        configuration.id ||
+                                    conflict.selection2.id === configuration.id,
+                            );
+                            const color =
+                                courseColorMap.get(configuration.courseId) ??
+                                COURSE_COLOR_PALETTE[0];
 
-                        return (
-                            <div
-                                key={configuration.id}
-                                className={`border-l-4 border border-[var(--color-border)] bg-[var(--color-surface)] ${color.summary} ${hasConflict ? "border-[var(--color-danger)]" : ""}`}
-                                style={{ padding: "var(--space-section)" }}
-                            >
-                                <div className="flex items-start justify-between gap-4">
-                                    <div>
-                                        <p className="font-heading text-2xl text-[var(--color-text)]">
-                                            {configuration.courseCode} ·{" "}
-                                            {configuration.courseName}
-                                        </p>
-                                        <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-                                            Section {configuration.sectionId} ·{" "}
-                                            {configuration.teacher}
-                                        </p>
-                                        <div className="mt-3 space-y-1.5 text-sm text-[var(--color-text-muted)]">
-                                            {configuration.sessions.map(
-                                                (session) => (
-                                                    <div key={session.id}>
-                                                        {formatDay(
-                                                            session.schedule
-                                                                .day,
-                                                        )}{" "}
-                                                        {
-                                                            session.schedule
-                                                                .startTime
-                                                        }
-                                                        -
-                                                        {
-                                                            session.schedule
-                                                                .endTime
-                                                        }{" "}
-                                                        · {session.type}{" "}
-                                                        {session.group}
-                                                    </div>
-                                                ),
-                                            )}
+                            return (
+                                <div
+                                    key={configuration.id}
+                                    className={`border-l-4 border border-[var(--color-border)] bg-[var(--color-surface)] ${color.summary} ${hasConflict ? "border-[var(--color-danger)]" : ""}`}
+                                    style={{ padding: "var(--space-section)" }}
+                                >
+                                    <div className="flex items-start justify-between gap-4">
+                                        <div>
+                                            <p className="font-heading text-2xl text-[var(--color-text)]">
+                                                {configuration.courseCode} ·{" "}
+                                                {configuration.courseName}
+                                            </p>
+                                            <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+                                                Section{" "}
+                                                {configuration.sectionId} ·{" "}
+                                                {configuration.teacher}
+                                            </p>
+                                            <div className="mt-3 space-y-1.5 text-sm text-[var(--color-text-muted)]">
+                                                {configuration.sessions.map(
+                                                    (session) => (
+                                                        <div key={session.id}>
+                                                            {formatDay(
+                                                                session.schedule
+                                                                    .day,
+                                                            )}{" "}
+                                                            {
+                                                                session.schedule
+                                                                    .startTime
+                                                            }
+                                                            -
+                                                            {
+                                                                session.schedule
+                                                                    .endTime
+                                                            }{" "}
+                                                            · {session.type}{" "}
+                                                            {session.group}
+                                                        </div>
+                                                    ),
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            {hasConflict ? (
+                                                <AlertCircle
+                                                    className="h-4 w-4 text-[var(--color-danger)]"
+                                                    aria-hidden="true"
+                                                />
+                                            ) : null}
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    removeSelectedCourse(
+                                                        configuration.courseId,
+                                                    )
+                                                }
+                                                aria-label={`Remove ${configuration.courseName} from schedule`}
+                                                className="flex h-9 w-9 items-center justify-center border border-[var(--color-border)] bg-[var(--color-page)] text-[var(--color-text-subtle)] transition-colors hover:border-[var(--color-danger)] hover:text-[var(--color-danger)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-danger)] focus-visible:ring-offset-2"
+                                            >
+                                                <X
+                                                    className="h-4 w-4"
+                                                    aria-hidden="true"
+                                                />
+                                            </button>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        {hasConflict ? (
-                                            <AlertCircle
-                                                className="h-4 w-4 text-[var(--color-danger)]"
-                                                aria-hidden="true"
-                                            />
-                                        ) : null}
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                removeSelectedCourse(
-                                                    configuration.courseId,
-                                                )
-                                            }
-                                            aria-label={`Remove ${configuration.courseName} from schedule`}
-                                            className="flex h-9 w-9 items-center justify-center border border-[var(--color-border)] bg-[var(--color-page)] text-[var(--color-text-subtle)] transition-colors hover:border-[var(--color-danger)] hover:text-[var(--color-danger)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-danger)] focus-visible:ring-offset-2"
-                                        >
-                                            <X
-                                                className="h-4 w-4"
-                                                aria-hidden="true"
-                                            />
-                                        </button>
-                                    </div>
                                 </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
+                    </div>
                 </PanelBody>
             </Panel>
         </div>
