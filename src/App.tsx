@@ -145,7 +145,7 @@ function App() {
                      * alignment with the <main> PageContainer below.
                      */}
                     <div
-                        className="mx-auto flex max-w-7xl flex-col gap-3 xl:flex-row xl:items-center xl:justify-between"
+                        className="mx-auto flex w-full max-w-[1920px] flex-col gap-3 xl:flex-row xl:items-center xl:justify-between"
                         style={{
                             paddingLeft: "var(--space-page-x)",
                             paddingRight: "var(--space-page-x)",
@@ -384,7 +384,7 @@ function App() {
                                     </div>
 
                                     {/* Two-column work area */}
-                                    <div className="grid grid-cols-1 gap-[var(--space-gap)] lg:grid-cols-[minmax(340px,380px)_minmax(0,1fr)] xl:grid-cols-[minmax(360px,400px)_minmax(0,1fr)] 2xl:grid-cols-[minmax(380px,420px)_minmax(0,1fr)]">
+                                    <div className="grid grid-cols-1 gap-[var(--space-gap)] lg:grid-cols-[minmax(340px,380px)_minmax(0,1fr)] xl:grid-cols-[minmax(360px,420px)_minmax(0,1fr)] 2xl:grid-cols-[minmax(380px,440px)_minmax(0,1fr)] min-[1800px]:grid-cols-[minmax(400px,460px)_minmax(0,1fr)]">
                                         {/* Selection library */}
                                         <Panel
                                             as="section"
