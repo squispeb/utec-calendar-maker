@@ -147,7 +147,7 @@ export function ScheduleView() {
                         <AlertCircle className="mt-0.5 h-5 w-5" />
                         <div>
                             <p className="text-sm font-semibold uppercase tracking-[0.16em]">
-                                Conflict review
+                                Cruces de horario
                             </p>
                             <ul className="mt-2 space-y-1 text-sm leading-7">
                                 {conflicts.map((conflict) => (
@@ -168,13 +168,13 @@ export function ScheduleView() {
                 aria-live="polite"
             >
                 <span className="sm:hidden">
-                    Scroll horizontally to see all days.
+                    Desplázate horizontalmente para ver todos los días.
                 </span>
             </p>
             <div className="relative overflow-x-auto border border-[var(--color-border-strong)] bg-[var(--color-surface)]">
                 <div className="grid min-w-[960px] grid-cols-[72px_repeat(6,minmax(140px,1fr))]">
                     <div className="border-b border-r border-[var(--color-border)] bg-[var(--color-page)] px-2 py-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-text-subtle)]">
-                        Time
+                        Hora
                     </div>
                     {DAYS.map((day) => (
                         <div
@@ -226,19 +226,19 @@ export function ScheduleView() {
                     <div className="absolute inset-0 flex items-center justify-center bg-[color-mix(in_srgb,var(--color-surface)_82%,white)] p-4 text-center">
                         <div className="max-w-md">
                             <p className="font-heading text-3xl text-[var(--color-text)]">
-                                Your weekly board is still empty
+                                Aún no has armado tu horario
                             </p>
                             <p className="mt-2 text-sm leading-7 text-[var(--color-text-muted)]">
-                                Select at least one complete course
-                                configuration from the library and the calendar
-                                will begin to fill itself.
+                                Elige al menos una opción de curso en el panel
+                                de la izquierda y aquí verás cómo queda tu
+                                semana.
                             </p>
                             <div className="mt-6 inline-flex items-center gap-2 border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-4 py-2.5 text-sm font-semibold text-[var(--color-primary)]">
                                 <ArrowLeft
                                     className="h-4 w-4"
                                     aria-hidden="true"
                                 />
-                                Start in the Selection Library on the left
+                                Empieza eligiendo cursos a la izquierda
                             </div>
                         </div>
                     </div>
@@ -252,11 +252,11 @@ export function ScheduleView() {
             >
                 <PanelHeader className="shrink-0">
                     <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--color-primary)]">
-                        Selected configurations
+                        Cursos elegidos
                     </p>
                     <p className="mt-2 text-sm text-[var(--color-text-muted)]">
-                        Each row below mirrors the active course bundle rendered
-                        in the calendar above.
+                        Aquí ves el detalle de los cursos que ya agregaste al
+                        horario.
                     </p>
                 </PanelHeader>
 
@@ -289,9 +289,9 @@ export function ScheduleView() {
                                                 {configuration.courseName}
                                             </p>
                                             <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-                                                Section{" "}
-                                                {configuration.sectionId} ·{" "}
-                                                {configuration.teacher}
+                                                Sección{" "}
+                                                {configuration.sectionId} ·
+                                                Docente: {configuration.teacher}
                                             </p>
                                             <div className="mt-3 space-y-1.5 text-sm text-[var(--color-text-muted)]">
                                                 {configuration.sessions.map(

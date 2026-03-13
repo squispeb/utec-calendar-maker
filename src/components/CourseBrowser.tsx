@@ -66,11 +66,11 @@ export function CourseBrowser() {
             <div className="border border-[var(--color-border)] bg-[var(--color-page)] px-6 py-12 text-center">
                 <BookOpen className="mx-auto h-10 w-10 text-[var(--color-text-subtle)]" />
                 <p className="mt-4 font-heading text-3xl text-[var(--color-text)]">
-                    No course library yet
+                    Todavía no hay cursos cargados
                 </p>
                 <p className="mt-2 text-sm leading-7 text-[var(--color-text-muted)]">
-                    Upload a PDF first to populate the planner with sections and
-                    professor-specific bundle groups.
+                    Sube primero un PDF para ver aquí tus cursos, secciones y
+                    opciones por docente.
                 </p>
             </div>
         );
@@ -91,7 +91,7 @@ export function CourseBrowser() {
                             aria-hidden="true"
                         />
                         <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-primary)]">
-                            Filters
+                            Busca y filtra
                         </span>
                     </div>
 
@@ -99,7 +99,10 @@ export function CourseBrowser() {
                         className="grid xl:grid-cols-3"
                         style={{ gap: "var(--space-gap)" }}
                     >
-                        <FilterField label="Search" htmlFor="search-filter">
+                        <FilterField
+                            label="Buscar curso"
+                            htmlFor="search-filter"
+                        >
                             <input
                                 id="search-filter"
                                 type="text"
@@ -110,7 +113,7 @@ export function CourseBrowser() {
                             />
                         </FilterField>
 
-                        <FilterField label="Type" htmlFor="type-filter">
+                        <FilterField label="Tipo" htmlFor="type-filter">
                             <FilterSelect
                                 id="type-filter"
                                 value={filterType}
@@ -120,13 +123,16 @@ export function CourseBrowser() {
                                     )
                                 }
                             >
-                                <option value="all">All types</option>
+                                <option value="all">Cualquier tipo</option>
                                 <option value="Obligatorio">Obligatorio</option>
                                 <option value="Electivo">Electivo</option>
                             </FilterSelect>
                         </FilterField>
 
-                        <FilterField label="Modality" htmlFor="modality-filter">
+                        <FilterField
+                            label="Modalidad"
+                            htmlFor="modality-filter"
+                        >
                             <FilterSelect
                                 id="modality-filter"
                                 value={filterModality}
@@ -136,7 +142,7 @@ export function CourseBrowser() {
                                     )
                                 }
                             >
-                                <option value="all">All modalities</option>
+                                <option value="all">Cualquier modalidad</option>
                                 <option value="Presencial">Presencial</option>
                                 <option value="Sincronico">Sincronico</option>
                                 <option value="Virtual">Virtual</option>
@@ -180,11 +186,11 @@ export function CourseBrowser() {
                         style={{ padding: "2.5rem var(--space-section)" }}
                     >
                         <p className="font-heading text-3xl text-[var(--color-text)]">
-                            No course matches this filter set
+                            No encontramos cursos con esos filtros
                         </p>
                         <p className="mt-2 text-sm text-[var(--color-text-muted)]">
-                            Reset the search or broaden the type and modality
-                            filters.
+                            Prueba con otra búsqueda o abre más los filtros de
+                            tipo y modalidad.
                         </p>
                     </div>
                 ) : (
@@ -316,7 +322,7 @@ function CourseCard({
                         </span>
                         {expanded ? (
                             <span className="border border-[var(--color-primary)] bg-[color-mix(in_srgb,var(--color-primary-soft)_78%,white)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-primary)] shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
-                                Open below
+                                Viendo detalle
                             </span>
                         ) : null}
                     </div>
@@ -336,11 +342,11 @@ function CourseCard({
                                 {selectedConfiguration.requiredBundleTypes
                                     ?.length ??
                                     selectedConfiguration.bundles.length}{" "}
-                                selected
+                                elegidos
                             </span>
                         ) : (
                             <span className="text-[var(--color-text-subtle)]">
-                                Choose section bundles
+                                Elige una opción de horario
                             </span>
                         )}
                     </div>
@@ -399,9 +405,10 @@ function ExpandedCoursePanel({
                             <span className="border border-[var(--color-border)] bg-[var(--color-page)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-subtle)]">
                                 {course.modality}
                             </span>
-                            <span className="border border-[color-mix(in_srgb,var(--color-border)_92%,white)] bg-[color-mix(in_srgb,var(--color-page)_55%,white)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-subtle)]">
-                                {course.sections.length} section
-                                {course.sections.length === 1 ? "" : "s"}
+                            <span className="border border-[color-mix(in_srgb,var(--color-border-strong)_88%,white)] bg-[color-mix(in_srgb,var(--color-page)_55%,white)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-subtle)]">
+                                {course.sections.length} sección
+                                {course.sections.length === 1 ? "" : "es"}{" "}
+                                disponibles
                             </span>
                         </div>
                         <h3 className="mt-3 font-heading text-[1.8rem] leading-[1.05] text-[var(--color-text)]">
@@ -414,8 +421,8 @@ function ExpandedCoursePanel({
                             <span className="h-1 w-1 rounded-full bg-[var(--color-border-strong)]" />
                             <span>
                                 {selectedConfiguration?.bundles?.length
-                                    ? `${selectedConfiguration.bundles.length}/${selectedConfiguration.requiredBundleTypes?.length ?? selectedConfiguration.bundles.length} groups selected`
-                                    : "No bundle groups selected yet"}
+                                    ? `${selectedConfiguration.bundles.length}/${selectedConfiguration.requiredBundleTypes?.length ?? selectedConfiguration.bundles.length} opciones elegidas`
+                                    : "Todavía no eliges ninguna opción"}
                             </span>
                         </div>
                     </div>
@@ -425,7 +432,7 @@ function ExpandedCoursePanel({
                         onClick={onCollapse}
                         className="shrink-0 border border-[var(--color-border-strong)] bg-[var(--color-page)] px-3 py-2 text-sm font-semibold text-[var(--color-text)] transition-colors hover:border-[var(--color-primary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-1"
                     >
-                        Collapse
+                        Cerrar detalle
                     </button>
                 </div>
             </div>
@@ -485,15 +492,15 @@ function SectionBuilder({
                 <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-primary)]">
-                            Section {section.id}
+                            Opción {section.id}
                         </p>
                         <p className="mt-2 max-w-none font-heading text-[1.5rem] leading-snug text-[var(--color-text)]">
                             {section.teacher}
                         </p>
                     </div>
                     <span className="shrink-0 border border-[color-mix(in_srgb,var(--color-border-strong)_88%,white)] bg-[color-mix(in_srgb,var(--color-page)_72%,white)] px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-subtle)] shadow-[inset_0_1px_0_rgba(255,255,255,0.45)]">
-                        {activeBundleIds.length}/{requiredTypes.length} groups
-                        selected
+                        {activeBundleIds.length}/{requiredTypes.length} opciones
+                        elegidas
                     </span>
                 </div>
             </PanelHeader>
@@ -543,7 +550,7 @@ function SectionBuilder({
                                                 onToggleBundle(bundle)
                                             }
                                             aria-pressed={isSelected}
-                                            aria-label={`${isSelected ? "Deselect" : "Select"} group ${bundle.group} — ${displayTeacher}`}
+                                            aria-label={`${isSelected ? "Quitar" : "Elegir"} grupo ${bundle.group} — ${displayTeacher}`}
                                             className={`border text-left transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-1 ${
                                                 isSelected
                                                     ? "border-[var(--color-primary)] bg-[color-mix(in_srgb,var(--color-primary-soft)_72%,white)] shadow-[0_10px_24px_rgba(37,99,235,0.10),inset_4px_0_0_0_var(--color-primary),inset_0_0_0_1px_var(--color-primary)]"
@@ -558,7 +565,7 @@ function SectionBuilder({
                                                 <div className="min-w-0 flex-1">
                                                     <div className="flex flex-wrap items-center gap-2">
                                                         <span className="border border-[var(--color-border)] bg-[var(--color-page)] px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-subtle)]">
-                                                            Group {bundle.group}
+                                                            Grupo {bundle.group}
                                                         </span>
                                                         {isSelected ? (
                                                             <span className="inline-flex items-center gap-1 rounded-full bg-[var(--color-primary-soft)] px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-primary)]">
@@ -566,7 +573,7 @@ function SectionBuilder({
                                                                     className="h-3.5 w-3.5 shrink-0"
                                                                     aria-hidden="true"
                                                                 />
-                                                                Selected
+                                                                Elegido
                                                             </span>
                                                         ) : null}
                                                     </div>
@@ -604,7 +611,7 @@ function SectionBuilder({
                                                                 <span className="inline-flex items-center gap-2">
                                                                     <MapPin className="h-3.5 w-3.5" />
                                                                     {session.location ||
-                                                                        "Location TBA"}
+                                                                        "Aula por confirmar"}
                                                                 </span>
                                                                 <span className="inline-flex items-center gap-2">
                                                                     <Users className="h-3.5 w-3.5" />
@@ -613,7 +620,7 @@ function SectionBuilder({
                                                                             session.enrolled,
                                                                         0,
                                                                     )}{" "}
-                                                                    vacancies
+                                                                    cupos libres
                                                                 </span>
                                                             </div>
                                                         </div>

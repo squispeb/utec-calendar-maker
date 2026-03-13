@@ -32,13 +32,17 @@ export function PDFUploader({ onUploadSuccess }: PDFUploaderProps) {
                 const payload = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(payload.error || "Unable to process PDF");
+                    throw new Error(
+                        payload.error || "No pudimos procesar el PDF",
+                    );
                 }
 
                 const data = payload.parsed as ParsedSchedule;
 
                 if (!data?.courses?.length) {
-                    throw new Error("No courses found in the uploaded PDF");
+                    throw new Error(
+                        "No encontramos cursos en el PDF que subiste",
+                    );
                 }
 
                 setParsedSchedule(data);
@@ -47,7 +51,7 @@ export function PDFUploader({ onUploadSuccess }: PDFUploaderProps) {
                 setError(
                     err instanceof Error
                         ? err.message
-                        : "Error processing PDF file",
+                        : "Hubo un problema al procesar el PDF",
                 );
             }
         },
@@ -76,7 +80,7 @@ export function PDFUploader({ onUploadSuccess }: PDFUploaderProps) {
                 await processPDF(file);
                 setIsLoading(false);
             } else {
-                setError("Please upload a PDF file");
+                setError("Sube un archivo en PDF para continuar");
             }
         },
         [processPDF],
@@ -131,11 +135,12 @@ export function PDFUploader({ onUploadSuccess }: PDFUploaderProps) {
                         </div>
                         <div>
                             <p className="font-heading text-3xl leading-none text-[var(--color-text)]">
-                                Converting with MarkItDown
+                                Estamos procesando tu PDF
                             </p>
                             <p className="mt-3 text-sm leading-7 text-[var(--color-text-muted)]">
-                                Reading the PDF structure, rebuilding course
-                                rows, and preparing section bundles.
+                                Estamos leyendo el archivo, ordenando los cursos
+                                y preparando las secciones para que puedas
+                                revisarlas con más claridad.
                             </p>
                         </div>
                     </div>
@@ -147,17 +152,18 @@ export function PDFUploader({ onUploadSuccess }: PDFUploaderProps) {
                         <div>
                             <div className="flex flex-wrap items-center gap-3">
                                 <p className="font-heading text-4xl leading-none text-[var(--color-text)]">
-                                    Drop your enrollment PDF here
+                                    Sube aquí tu PDF de matrícula
                                 </p>
                                 <span className="border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--color-text-subtle)]">
-                                    PDF only
+                                    PDF
                                 </span>
                             </div>
                             <p className="mt-4 max-w-2xl text-base leading-8 text-[var(--color-text-muted)]">
-                                Click to browse or drag the official `Horario
-                                Carga Habil` export. The server converts it to
-                                markdown first, then maps course groups, teacher
-                                names, rooms, and frequencies into the planner.
+                                Haz clic para buscar tu archivo o arrástralo
+                                aquí. Usa la exportación oficial de `Horario
+                                Carga Habil` para que podamos identificar
+                                cursos, docentes, aulas y horarios
+                                correctamente.
                             </p>
                         </div>
                     </div>
@@ -173,7 +179,7 @@ export function PDFUploader({ onUploadSuccess }: PDFUploaderProps) {
                     <X className="mt-0.5 h-4 w-4" aria-hidden="true" />
                     <div>
                         <p className="font-semibold uppercase tracking-[0.12em]">
-                            Import error
+                            No se pudo cargar el archivo
                         </p>
                         <p className="mt-1 leading-6">{error}</p>
                     </div>
@@ -186,12 +192,13 @@ export function PDFUploader({ onUploadSuccess }: PDFUploaderProps) {
                         <FileText className="mt-0.5 h-5 w-5 text-[var(--color-primary)]" />
                         <div>
                             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--color-primary)]">
-                                Expected file
+                                Qué archivo subir
                             </p>
                             <p className="mt-2 text-sm leading-7 text-[var(--color-text-muted)]">
-                                UTEC schedule PDFs exported from the enrollment
-                                platform, including section, group, frequency,
-                                room, and teacher columns.
+                                Sube el PDF de horario exportado desde la
+                                plataforma de matrícula de UTEC. Lo ideal es que
+                                incluya sección, grupo, frecuencia, aula y
+                                docente.
                             </p>
                         </div>
                     </div>
@@ -201,13 +208,13 @@ export function PDFUploader({ onUploadSuccess }: PDFUploaderProps) {
                         <ScanSearch className="mt-0.5 h-5 w-5 text-[var(--color-accent)]" />
                         <div>
                             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--color-accent)]">
-                                Parsing pass
+                                Cómo lo procesamos
                             </p>
                             <p className="mt-2 text-sm leading-7 text-[var(--color-text-muted)]">
-                                MarkItDown preserves the multi-line rows so the
-                                planner can distinguish real professor
-                                assignments like the separate advisors in
-                                `Proyecto Final`.
+                                El sistema conserva bien la estructura del PDF
+                                para diferenciar cursos, grupos y docentes,
+                                incluso cuando una fila viene partida en varias
+                                líneas.
                             </p>
                         </div>
                     </div>

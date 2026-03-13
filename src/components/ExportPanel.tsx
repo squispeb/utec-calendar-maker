@@ -47,17 +47,17 @@ export function ExportPanel() {
 
     const exportToCSV = () => {
         const headers = [
-            "Course Code",
-            "Course Name",
-            "Section",
-            "Teacher",
-            "Session Type",
-            "Group",
-            "Day",
-            "Start Time",
-            "End Time",
-            "Frequency",
-            "Location",
+            "Código del curso",
+            "Nombre del curso",
+            "Sección",
+            "Docente",
+            "Tipo de sesión",
+            "Grupo",
+            "Día",
+            "Hora de inicio",
+            "Hora de fin",
+            "Frecuencia",
+            "Ubicación",
         ];
 
         const csvContent = [
@@ -102,11 +102,11 @@ export function ExportPanel() {
                     />
                     <div>
                         <p className="font-heading text-2xl text-[var(--color-text)]">
-                            Nothing ready to export
+                            Todavía no tienes nada para exportar
                         </p>
                         <p className="mt-2 text-sm leading-7 text-[var(--color-text-muted)]">
-                            Build at least one complete course configuration
-                            before creating JSON or CSV output.
+                            Elige por lo menos una opción completa de curso
+                            antes de descargar tu horario en JSON o CSV.
                         </p>
                     </div>
                 </div>
@@ -119,28 +119,29 @@ export function ExportPanel() {
             <div className="grid gap-4 md:grid-cols-2">
                 <ExportCard
                     icon={FileJson}
-                    eyebrow="Structured archive"
-                    title="Export JSON"
-                    description="Keep the full configuration graph, including selected bundles and all generated meetings."
-                    actionLabel="Download JSON"
+                    eyebrow="Formato completo"
+                    title="Descargar JSON"
+                    description="Guarda toda la información del horario, incluyendo las opciones elegidas y todas las sesiones generadas."
+                    actionLabel="Bajar JSON"
                     onClick={exportToJSON}
                     accent="text-[var(--color-primary)]"
                     border="border-[var(--color-primary)]"
                 />
                 <ExportCard
                     icon={FileSpreadsheet}
-                    eyebrow="Spreadsheet review"
-                    title="Export CSV"
-                    description="Flatten the chosen meetings into one row per event for spreadsheets or external planning tools."
-                    actionLabel="Download CSV"
+                    eyebrow="Formato simple"
+                    title="Descargar CSV"
+                    description="Pasa las sesiones elegidas a una fila por cada horario para que puedas revisarlas en Excel o en otra herramienta."
+                    actionLabel="Bajar CSV"
                     onClick={exportToCSV}
                     accent="text-[var(--color-accent)]"
                     border="border-[var(--color-accent)]"
                 />
             </div>
             <p className="text-sm leading-7 text-[var(--color-text-muted)]">
-                Exports use the currently selected course configurations only,
-                so incomplete draft choices stay out of the final files.
+                Solo se exportan las opciones que tienes seleccionadas en este
+                momento. Si dejaste algo incompleto, no se va a incluir en el
+                archivo final.
             </p>
         </div>
     );

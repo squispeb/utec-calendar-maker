@@ -92,25 +92,25 @@ function App() {
                     >
                         <div className="w-full max-w-md border border-[var(--color-border-strong)] bg-[var(--color-surface)] p-6 shadow-xl">
                             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-danger)]">
-                                Destructive action
+                                Acción destructiva
                             </p>
                             <h2
                                 id="confirm-clear-title"
                                 className="mt-3 font-heading text-3xl text-[var(--color-text)]"
                             >
-                                Clear current schedule?
+                                ¿Borrar el horario actual?
                             </h2>
                             <p
                                 id="confirm-clear-desc"
                                 className="mt-3 text-sm leading-7 text-[var(--color-text-muted)]"
                             >
-                                You have {selectedConfigurations.length} course
-                                configuration
+                                Tienes {selectedConfigurations.length}{" "}
+                                configuraci
                                 {selectedConfigurations.length === 1
-                                    ? ""
-                                    : "s"}{" "}
-                                selected. Uploading a new PDF will clear all of
-                                them and cannot be undone.
+                                    ? "ón de curso seleccionada"
+                                    : "ones de curso seleccionadas"}{" "}
+                                . Si subes un PDF nuevo, se borrarán todas y no
+                                podrás deshacer esta acción.
                             </p>
                             <div className="mt-6 flex items-center justify-end gap-3">
                                 <button
@@ -118,7 +118,7 @@ function App() {
                                     onClick={handleCancelClear}
                                     className="border border-[var(--color-border-strong)] bg-[var(--color-page)] px-4 py-2.5 text-sm font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
                                 >
-                                    Keep my schedule
+                                    Mantener mi horario
                                 </button>
                                 <button
                                     ref={confirmClearRef}
@@ -126,7 +126,7 @@ function App() {
                                     onClick={handleConfirmClear}
                                     className="border border-[var(--color-danger)] bg-[var(--color-danger)] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-danger)] focus-visible:ring-offset-2"
                                 >
-                                    Yes, clear and upload
+                                    Sí, borrar y subir
                                 </button>
                             </div>
                         </div>
@@ -145,7 +145,7 @@ function App() {
                      * alignment with the <main> PageContainer below.
                      */}
                     <div
-                        className="mx-auto flex w-full max-w-[1920px] flex-col gap-3 xl:flex-row xl:items-center xl:justify-between"
+                        className="mx-auto flex w-full max-w-[1920px] flex-col gap-4 xl:flex-row xl:items-center xl:justify-between"
                         style={{
                             paddingLeft: "var(--space-page-x)",
                             paddingRight: "var(--space-page-x)",
@@ -153,33 +153,35 @@ function App() {
                             paddingBottom: "1rem",
                         }}
                     >
-                        <div className="flex items-start gap-4">
-                            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center border border-[var(--color-border-strong)] bg-[var(--color-surface)] text-[var(--color-primary)]">
-                                <GraduationCap className="h-6 w-6" />
+                        <div className="flex items-center gap-4">
+                            <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center border border-[var(--color-border-strong)] bg-[linear-gradient(135deg,color-mix(in_srgb,var(--color-primary)_16%,white),var(--color-surface))] text-[var(--color-primary)] shadow-[0_10px_30px_rgba(37,99,235,0.14)]">
+                                <GraduationCap className="h-7 w-7" />
                             </div>
-                            <div>
-                                <p className="font-heading text-2xl leading-none tracking-tight text-[var(--color-text)]">
-                                    UTEC Calendar Maker
+                            <div className="min-w-0">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--color-primary)]">
+                                    Planifica tu horario
                                 </p>
-                                <p className="mt-1.5 max-w-2xl text-sm text-[var(--color-text-muted)]">
-                                    A schedule workshop for comparing section
-                                    combinations, reviewing conflicts, and
-                                    shaping a clean weekly plan from official
-                                    UTEC enrollment PDFs.
+                                <p className="mt-1 font-heading text-[clamp(1.5rem,2vw,2.1rem)] leading-none tracking-tight text-[var(--color-text)]">
+                                    Organiza tu horario UTEC
+                                </p>
+                                <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--color-text-muted)] sm:text-[15px]">
+                                    Compara secciones, revisa cruces al toque y
+                                    arma un horario más claro a partir del PDF
+                                    oficial de matrícula de UTEC.
                                 </p>
                             </div>
                         </div>
 
-                        <div className="flex flex-wrap items-center gap-2 text-sm text-[var(--color-text-muted)]">
-                            <MetaChip label="Period" value={overview.period} />
+                        <div className="flex flex-wrap items-stretch gap-2 sm:justify-end text-sm text-[var(--color-text-muted)]">
+                            <MetaChip label="Periodo" value={overview.period} />
                             {parsedSchedule && !showUpload ? (
                                 <>
                                     <MetaChip
-                                        label="Student"
+                                        label="Estudiante"
                                         value={parsedSchedule.studentInfo.name}
                                     />
                                     <MetaChip
-                                        label="Career"
+                                        label="Carrera"
                                         value={
                                             parsedSchedule.studentInfo.career
                                         }
@@ -187,8 +189,8 @@ function App() {
                                 </>
                             ) : (
                                 <MetaChip
-                                    label="Mode"
-                                    value="Desktop planning workspace"
+                                    label="Modo"
+                                    value="Planificador en escritorio"
                                 />
                             )}
                         </div>
@@ -209,21 +211,20 @@ function App() {
                                     <Panel as="section">
                                         <div className="max-w-3xl">
                                             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[var(--color-primary)]">
-                                                Academic schedule atelier
+                                                Arma tu horario
                                             </p>
-                                            <h1 className="mt-4 max-w-4xl font-heading text-5xl leading-[0.94] tracking-tight text-[var(--color-text)] lg:text-7xl">
-                                                Turn a rigid PDF into a schedule
-                                                you can actually reason about.
+                                            <h1 className="mt-4 max-w-4xl font-heading text-5xl leading-[0.92] tracking-tight text-[var(--color-text)] lg:text-7xl">
+                                                Pasa tu PDF de matrícula a un
+                                                horario fácil de revisar,
+                                                comparar y ordenar.
                                             </h1>
-                                            <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--color-text-muted)]">
-                                                Import the official enrollment
-                                                sheet, compare section bundles,
-                                                surface clashes, and export the
-                                                combinations worth keeping. The
-                                                interface is tuned for
-                                                long-form, detail-heavy planning
-                                                on desktop without losing the
-                                                clarity students need.
+                                            <p className="mt-6 max-w-2xl text-base leading-8 text-[var(--color-text-muted)] sm:text-lg">
+                                                Sube tu hoja de matrícula,
+                                                revisa las opciones de
+                                                secciones, detecta cruces desde
+                                                el inicio y quédate con las
+                                                combinaciones que realmente te
+                                                sirven.
                                             </p>
                                         </div>
 
@@ -233,18 +234,18 @@ function App() {
                                         >
                                             <LandingFeature
                                                 icon={FileUp}
-                                                title="MarkItDown pipeline"
-                                                description="Convert the PDF into structured markdown first so multi-line course rows stay readable and auditable."
+                                                title="Carga el PDF"
+                                                description="Primero se ordena el contenido del PDF para que los cursos y sus filas se puedan leer mejor."
                                             />
                                             <LandingFeature
                                                 icon={BookOpen}
-                                                title="Section-aware selection"
-                                                description="Build complete course configurations instead of clicking isolated meetings that do not reflect real enrollment choices."
+                                                title="Elige bien tus secciones"
+                                                description="Selecciona combinaciones completas de curso, no horarios sueltos que luego no te sirven al matricularte."
                                             />
                                             <LandingFeature
                                                 icon={CalendarRange}
-                                                title="Calendar-first review"
-                                                description="See every chosen bundle rendered by day and hour, with distinct colors and visible professor names per group."
+                                                title="Revísalo en calendario"
+                                                description="Mira tus elecciones por día y hora, con colores claros y el nombre del docente en cada grupo."
                                             />
                                         </div>
                                     </Panel>
@@ -254,11 +255,11 @@ function App() {
                                         <PanelHeader className="flex items-start justify-between gap-4">
                                             <div>
                                                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-accent)]">
-                                                    Start with the PDF
+                                                    Sube tu PDF
                                                 </p>
                                                 <h2 className="mt-2 font-heading text-3xl text-[var(--color-text)]">
-                                                    Load your current enrollment
-                                                    sheet.
+                                                    Carga tu horario de
+                                                    matrícula.
                                                 </h2>
                                             </div>
                                             <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center border border-[var(--color-border-strong)] bg-[var(--color-page)] text-[var(--color-primary)]">
@@ -281,18 +282,18 @@ function App() {
                                             >
                                                 <ProcessRow
                                                     step="01"
-                                                    title="Upload"
-                                                    description="Drop the official UTEC PDF into the workspace."
+                                                    title="Sube"
+                                                    description="Carga el PDF oficial de UTEC."
                                                 />
                                                 <ProcessRow
                                                     step="02"
-                                                    title="Inspect"
-                                                    description="Review grouped bundles with matching professors, rooms, and week patterns."
+                                                    title="Revisa"
+                                                    description="Mira las opciones agrupadas con docentes, aulas y horarios."
                                                 />
                                                 <ProcessRow
                                                     step="03"
-                                                    title="Compose"
-                                                    description="Assemble the schedule visually and keep only the combinations that survive conflict review."
+                                                    title="Elige"
+                                                    description="Quédate con las combinaciones que sí encajan en tu semana."
                                                 />
                                             </div>
                                         </PanelBody>
@@ -310,7 +311,7 @@ function App() {
                                             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                                                 <div>
                                                     <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[var(--color-primary)]">
-                                                        Planning desk
+                                                        Tu horario
                                                     </p>
                                                     <h2 className="mt-3 font-heading text-4xl leading-tight text-[var(--color-text)]">
                                                         {
@@ -320,20 +321,15 @@ function App() {
                                                         }
                                                         <br />
                                                         <span className="text-[var(--color-text-muted)]">
-                                                            schedule
-                                                            construction
+                                                            organiza tu semana
                                                         </span>
                                                     </h2>
                                                     <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--color-text-muted)]">
-                                                        Choose bundle
-                                                        combinations on the
-                                                        left, track how they
-                                                        stack through the week,
-                                                        and validate
-                                                        professor-specific
-                                                        options before
-                                                        committing to
-                                                        registration.
+                                                        Elige secciones, mira
+                                                        cómo quedan durante la
+                                                        semana y revisa bien los
+                                                        cruces antes de cerrar
+                                                        tu matrícula.
                                                     </p>
                                                 </div>
 
@@ -342,7 +338,7 @@ function App() {
                                                     onClick={handleNewUpload}
                                                     className="inline-flex items-center gap-2 self-start border border-[var(--color-accent)] bg-[var(--color-accent)] px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-[var(--color-accent-strong)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-2"
                                                 >
-                                                    Upload New PDF
+                                                    Subir nuevo PDF
                                                     <ArrowUpRight className="h-4 w-4" />
                                                 </button>
                                             </div>
@@ -351,7 +347,7 @@ function App() {
                                         <div className="grid gap-[var(--space-gap)] sm:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-3">
                                             <StatCard
                                                 icon={BookOpen}
-                                                label="Courses loaded"
+                                                label="Cursos cargados"
                                                 value={String(
                                                     overview.courseCount,
                                                 )}
@@ -359,7 +355,7 @@ function App() {
                                             />
                                             <StatCard
                                                 icon={LayoutPanelTop}
-                                                label="Selections"
+                                                label="Selecciones"
                                                 value={String(
                                                     overview.selectedCount,
                                                 )}
@@ -367,7 +363,7 @@ function App() {
                                             />
                                             <StatCard
                                                 icon={ShieldAlert}
-                                                label="Conflicts"
+                                                label="Cruces"
                                                 value={String(
                                                     overview.conflictCount,
                                                 )}
@@ -393,16 +389,15 @@ function App() {
                                         >
                                             <PanelHeader className="shrink-0">
                                                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--color-primary)]">
-                                                    Selection library
+                                                    Elige tus cursos
                                                 </p>
                                                 <h3 className="mt-2 font-heading text-2xl text-[var(--color-text)]">
-                                                    Available courses
+                                                    Cursos y secciones
                                                 </h3>
                                                 <p className="mt-2 max-w-[38ch] text-sm leading-7 text-[var(--color-text-muted)]">
-                                                    Filter courses, compare each
-                                                    section, and pick the bundle
-                                                    groups that form a valid
-                                                    course configuration.
+                                                    Filtra los cursos, compara
+                                                    sus secciones y elige la
+                                                    opción que mejor te acomode.
                                                 </p>
                                             </PanelHeader>
                                             <PanelBody className="min-h-0 lg:flex-1 lg:overflow-y-auto">
@@ -419,22 +414,21 @@ function App() {
                                                 <PanelHeader className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
                                                     <div>
                                                         <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--color-primary)]">
-                                                            Weekly board
+                                                            Vista semanal
                                                         </p>
                                                         <h3 className="mt-2 font-heading text-2xl text-[var(--color-text)]">
-                                                            Your schedule canvas
+                                                            Así queda tu horario
                                                         </h3>
                                                     </div>
                                                     <p className="text-sm text-[var(--color-text-muted)]">
                                                         {
                                                             selectedConfigurations.length
                                                         }{" "}
-                                                        course
+                                                        curso
                                                         {selectedConfigurations.length ===
                                                         1
-                                                            ? ""
-                                                            : "s"}{" "}
-                                                        selected
+                                                            ? " seleccionado"
+                                                            : "s seleccionados"}
                                                     </p>
                                                 </PanelHeader>
                                                 <PanelBody>
@@ -446,12 +440,12 @@ function App() {
                                                 <div className="mb-4 flex items-center justify-between gap-4">
                                                     <div>
                                                         <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--color-accent)]">
-                                                            Output
+                                                            Exporta tu horario
                                                         </p>
                                                         <h3 className="mt-2 font-heading text-2xl text-[var(--color-text)]">
-                                                            Keep the
-                                                            combinations worth
-                                                            exporting
+                                                            Guarda las opciones
+                                                            que quieras revisar
+                                                            después
                                                         </h3>
                                                     </div>
                                                 </div>
@@ -473,11 +467,13 @@ function App() {
 
 function MetaChip({ label, value }: { label: string; value: string }) {
     return (
-        <div className="inline-flex items-center gap-2 border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--color-text-subtle)]">
+        <div className="inline-flex min-h-[44px] items-center gap-2.5 border border-[var(--color-border)] bg-[var(--color-surface)] px-3.5 py-2.5 font-sans shadow-[0_1px_0_rgba(15,23,42,0.02)]">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--color-primary)]">
                 {label}
             </span>
-            <span className="text-sm text-[var(--color-text)]">{value}</span>
+            <span className="max-w-[28ch] truncate text-sm font-medium leading-none text-[var(--color-text)]">
+                {value}
+            </span>
         </div>
     );
 }
