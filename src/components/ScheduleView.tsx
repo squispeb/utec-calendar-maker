@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { AlertCircle, ArrowLeft, X } from "lucide-react";
 import { Panel, PanelHeader, PanelBody } from "./layout";
 import { useScheduleStore } from "../store/scheduleStore";
+import { formatEnrollmentRatio, getAvailableSeats, hasCapacityData } from "../utils/capacity";
 import { formatDay, timeToMinutes } from "../utils/conflictDetection";
 import { deriveTeacherName } from "../utils/courseConfigurations";
 import type { DayOfWeek, SelectedConfiguration, Session } from "../types";
@@ -312,6 +313,11 @@ export function ScheduleView() {
                                                             }{" "}
                                                             · {session.type}{" "}
                                                             {session.group}
+                                                            {hasCapacityData(
+                                                                session,
+                                                            )
+                                                                ? ` · ${formatEnrollmentRatio(session)} · ${getAvailableSeats(session)} libres`
+                                                                : ""}
                                                         </div>
                                                     ),
                                                 )}
@@ -418,10 +424,10 @@ function DayColumn({
                             <X className="h-3 w-3" aria-hidden="true" />
                         </button>
                         <div className="truncate pr-4 font-semibold">
-                            {meeting.configuration.courseCode}
+                            {meeting.configuration.courseName}
                         </div>
                         <div className="truncate pr-4 text-[11px] opacity-85">
-                            {displayTeacher}
+                            {meeting.configuration.courseCode} · {displayTeacher}
                         </div>
                         <div className="truncate mt-1">
                             {meeting.session.type} {meeting.session.group}
@@ -430,6 +436,11 @@ function DayColumn({
                             {meeting.session.schedule.startTime}-
                             {meeting.session.schedule.endTime}
                         </div>
+                        {hasCapacityData(meeting.session) ? (
+                            <div className="mt-1 truncate text-[10px] opacity-75">
+                                {formatEnrollmentRatio(meeting.session)}
+                            </div>
+                        ) : null}
                     </div>
                 );
             })}

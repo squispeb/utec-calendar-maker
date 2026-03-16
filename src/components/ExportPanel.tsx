@@ -1,5 +1,6 @@
 import { Download, FileJson, FileSpreadsheet } from "lucide-react";
 import { useScheduleStore } from "../store/scheduleStore";
+import { getAvailableSeats } from "../utils/capacity";
 
 export function ExportPanel() {
     const selectedConfigurations = useScheduleStore(
@@ -22,6 +23,9 @@ export function ExportPanel() {
             endTime: session.schedule.endTime,
             frequency: session.schedule.frequency,
             location: session.location,
+            enrolled: session.enrolled,
+            vacancies: session.vacancies,
+            availableSeats: getAvailableSeats(session),
         })),
     );
 
@@ -58,6 +62,9 @@ export function ExportPanel() {
             "Hora de fin",
             "Frecuencia",
             "Ubicación",
+            "Matriculados",
+            "Vacantes",
+            "Cupos libres",
         ];
 
         const csvContent = [
@@ -75,6 +82,9 @@ export function ExportPanel() {
                     row.endTime,
                     row.frequency,
                     row.location,
+                    row.enrolled.toString(),
+                    row.vacancies.toString(),
+                    row.availableSeats.toString(),
                 ]
                     .map((value) => `"${value}"`)
                     .join(","),

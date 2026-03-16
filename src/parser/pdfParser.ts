@@ -226,6 +226,7 @@ function parseBlock(block: { code: string; lines: string[] }): ParsedEntry[] {
   const type: CourseType = fullText.includes('Electivo') ? 'Electivo' : 'Obligatorio';
   const modality = extractModality(fullText);
   const sectionId = extractSectionId(fullText);
+  const capacity = extractCapacity(block.lines);
   
   // Create an entry for each time found
   for (const time of times) {
@@ -243,8 +244,8 @@ function parseBlock(block: { code: string; lines: string[] }): ParsedEntry[] {
       endTime: time.end,
       frequency: extractFrequency(fullText),
       location: extractLocation(fullText),
-      vacancies: extractVacancies(fullText),
-      enrolled: extractEnrolled(fullText)
+      vacancies: capacity.vacancies,
+      enrolled: capacity.enrolled
     });
   }
   
@@ -377,14 +378,35 @@ function extractLocation(text: string): string {
   return '';
 }
 
-function extractVacancies(text: string): number {
-  const match = text.match(/(\d+)\s+(\d+)\s*$/);
-  return match ? parseInt(match[1]) : 0;
-}
+function extractCapacity(lines: string[]): { vacancies: number; enrolled: number } {
+  const candidateLines = lines
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('|') && !line.match(/^\d+$/));
 
-function extractEnrolled(text: string): number {
-  const match = text.match(/(\d+)\s+(\d+)\s*$/);
-  return match ? parseInt(match[2]) : 0;
+  for (const line of candidateLines) {
+    const ratioMatch = line.match(/(\d+)\s*\/\s*(\d+)\s*$/);
+    if (ratioMatch) {
+      return {
+        enrolled: parseInt(ratioMatch[1], 10),
+        vacancies: parseInt(ratioMatch[2], 10),
+      };
+    }
+  }
+
+  for (const line of candidateLines) {
+    const trailingPairMatch = line.match(/(\d+)\s+(\d+)\s*$/);
+    if (trailingPairMatch) {
+      return {
+        vacancies: parseInt(trailingPairMatch[1], 10),
+        enrolled: parseInt(trailingPairMatch[2], 10),
+      };
+    }
+  }
+
+  return {
+    vacancies: 0,
+    enrolled: 0,
+  };
 }
 
 interface ParsedEntry {

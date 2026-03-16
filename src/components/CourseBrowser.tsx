@@ -20,6 +20,11 @@ import type {
 } from "../types";
 import { describeSession } from "../utils/conflictDetection";
 import {
+    formatEnrollmentRatio,
+    getAvailableSeats,
+    hasCapacityData,
+} from "../utils/capacity";
+import {
     deriveTeacherName,
     getRequiredBundleTypes,
     getSectionBundles,
@@ -615,12 +620,11 @@ function SectionBuilder({
                                                                 </span>
                                                                 <span className="inline-flex items-center gap-2">
                                                                     <Users className="h-3.5 w-3.5" />
-                                                                    {Math.max(
-                                                                        session.vacancies -
-                                                                            session.enrolled,
-                                                                        0,
-                                                                    )}{" "}
-                                                                    cupos libres
+                                                                    {hasCapacityData(
+                                                                        session,
+                                                                    )
+                                                                        ? `${formatEnrollmentRatio(session)} · ${getAvailableSeats(session)} libres`
+                                                                        : "Capacidad no reportada"}
                                                                 </span>
                                                             </div>
                                                         </div>
