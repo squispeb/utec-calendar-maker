@@ -11,7 +11,7 @@ La app permite:
 - comparar opciones de cursos
 - detectar cruces de horario
 - ver el horario semanal
-- exportar las selecciones en `JSON` o `CSV`
+- exportar las selecciones en `JSON`, `CSV` o `ICS`
 
 ## Stack
 
