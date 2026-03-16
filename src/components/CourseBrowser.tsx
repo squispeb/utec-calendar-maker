@@ -26,6 +26,7 @@ import {
 } from "../utils/capacity";
 import {
     deriveTeacherName,
+    getSharedSectionBundles,
     getRequiredBundleTypes,
     getSectionBundles,
 } from "../utils/courseConfigurations";
@@ -444,8 +445,15 @@ function ExpandedCoursePanel({
 
             <div className="flex flex-col" style={{ gap: "var(--space-gap)" }}>
                 {course.sections.map((section) => {
-                    const bundles = getSectionBundles(section);
-                    const requiredTypes = getRequiredBundleTypes(section);
+                    const bundles = getSectionBundles(course, section);
+                    const requiredTypes = getRequiredBundleTypes(
+                        course,
+                        section,
+                    );
+                    const sharedBundles = getSharedSectionBundles(
+                        course,
+                        section,
+                    );
                     const isActiveSection =
                         selectedConfiguration?.sectionId === section.id;
 
@@ -454,6 +462,7 @@ function ExpandedCoursePanel({
                             key={`${course.id}-${section.id}`}
                             section={section}
                             bundles={bundles}
+                            sharedBundles={sharedBundles}
                             requiredTypes={requiredTypes}
                             activeBundleIds={
                                 isActiveSection
@@ -476,6 +485,7 @@ function ExpandedCoursePanel({
 interface SectionBuilderProps {
     section: Section;
     bundles: SessionBundle[];
+    sharedBundles: SessionBundle[];
     requiredTypes: string[];
     activeBundleIds: string[];
     onToggleBundle: (bundle: SessionBundle) => void;
@@ -484,6 +494,7 @@ interface SectionBuilderProps {
 function SectionBuilder({
     section,
     bundles,
+    sharedBundles,
     requiredTypes,
     activeBundleIds,
     onToggleBundle,
@@ -514,6 +525,71 @@ function SectionBuilder({
                 className="flex flex-col bg-[color-mix(in_srgb,var(--color-page)_55%,white)]"
                 style={{ gap: "var(--space-gap)" }}
             >
+                {sharedBundles.length > 0 ? (
+                    <div
+                        className="border border-[color-mix(in_srgb,var(--color-primary)_16%,white)] bg-[color-mix(in_srgb,var(--color-primary-soft)_76%,white)]"
+                        style={{ padding: "var(--space-section)" }}
+                    >
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-primary)]">
+                            Sesion comun incluida automaticamente
+                        </p>
+                        <div
+                            className="mt-4 flex flex-col"
+                            style={{ gap: "calc(var(--space-gap) * 0.75)" }}
+                        >
+                            {sharedBundles.map((bundle) => (
+                                <div
+                                    key={`shared-${bundle.id}`}
+                                    className="border border-[color-mix(in_srgb,var(--color-primary)_16%,white)] bg-[var(--color-surface)] px-4 py-4"
+                                >
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <span className="border border-[var(--color-border)] bg-[var(--color-page)] px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-subtle)]">
+                                            Grupo {bundle.group}
+                                        </span>
+                                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--color-primary-soft)] px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-primary)]">
+                                            Incluida
+                                        </span>
+                                    </div>
+                                    <p className="mt-3 max-w-none font-heading text-[1.25rem] leading-snug text-[var(--color-text)]">
+                                        {bundle.teacher}
+                                    </p>
+                                    <div
+                                        className="mt-4 flex flex-col"
+                                        style={{ gap: "calc(var(--space-gap) * 0.45)" }}
+                                    >
+                                        {bundle.sessions.map((session) => (
+                                            <div
+                                                key={session.id}
+                                                className="grid gap-2 border border-[color-mix(in_srgb,var(--color-primary)_12%,white)] bg-[color-mix(in_srgb,var(--color-page)_70%,white)] px-3 py-3 text-sm"
+                                            >
+                                                <div className="flex items-start gap-2 text-[var(--color-text)]">
+                                                    <Clock3 className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-primary)]" />
+                                                    <span className="leading-6">
+                                                        {describeSession(session)}
+                                                    </span>
+                                                </div>
+                                                <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-text-subtle)]">
+                                                    <span className="inline-flex items-center gap-2">
+                                                        <MapPin className="h-3.5 w-3.5" />
+                                                        {session.location ||
+                                                            "Aula por confirmar"}
+                                                    </span>
+                                                    <span className="inline-flex items-center gap-2">
+                                                        <Users className="h-3.5 w-3.5" />
+                                                        {hasCapacityData(session)
+                                                            ? `${formatEnrollmentRatio(session)} · ${getAvailableSeats(session)} libres`
+                                                            : "Capacidad no reportada"}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ) : null}
+
                 {requiredTypes.map((type) => {
                     const typeBundles = bundles.filter(
                         (bundle) => bundle.type === type,

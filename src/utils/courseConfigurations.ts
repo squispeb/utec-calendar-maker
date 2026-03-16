@@ -38,7 +38,7 @@ export function deriveTeacherName(sessions: Session[]): string {
   return teachers.join(', ')
 }
 
-export function getSectionBundles(section: Section): SessionBundle[] {
+function getBaseSectionBundles(section: Section): SessionBundle[] {
   const bundles = new Map<string, SessionBundle>()
 
   for (const session of section.sessions) {
@@ -75,6 +75,28 @@ export function getSectionBundles(section: Section): SessionBundle[] {
   })
 }
 
+function isSharedBundle(course: Course, bundle: SessionBundle, bundlesOfType: SessionBundle[]) {
+  return course.code === 'CS5101' && bundle.type === 'Virtual' && bundle.group === '1' && bundlesOfType.length > 1
+}
+
+export function getSharedSectionBundles(course: Course, section: Section): SessionBundle[] {
+  const bundles = getBaseSectionBundles(section)
+
+  return bundles.filter((bundle) => {
+    const bundlesOfType = bundles.filter((candidate) => candidate.type === bundle.type)
+    return isSharedBundle(course, bundle, bundlesOfType)
+  })
+}
+
+export function getSectionBundles(course: Course, section: Section): SessionBundle[] {
+  const bundles = getBaseSectionBundles(section)
+
+  return bundles.filter((bundle) => {
+    const bundlesOfType = bundles.filter((candidate) => candidate.type === bundle.type)
+    return !isSharedBundle(course, bundle, bundlesOfType)
+  })
+}
+
 function cartesian<T>(items: T[][]): T[][] {
   if (items.length === 0) {
     return []
@@ -86,8 +108,11 @@ function cartesian<T>(items: T[][]): T[][] {
   )
 }
 
-export function getRequiredBundleTypes(section: Section): SessionType[] {
-  return [...new Set(getSectionBundles(section).map((bundle) => bundle.type))]
+export function getRequiredBundleTypes(course: Course, section: Section): SessionType[] {
+  const selectableBundles = getSectionBundles(course, section)
+  const sourceBundles = selectableBundles.length > 0 ? selectableBundles : getBaseSectionBundles(section)
+
+  return [...new Set(sourceBundles.map((bundle) => bundle.type))]
 }
 
 export function buildSelectedConfiguration(
@@ -95,9 +120,15 @@ export function buildSelectedConfiguration(
   section: Section,
   bundles: SessionBundle[],
 ): SelectedConfiguration {
-  const requiredBundleTypes = getRequiredBundleTypes(section)
-  const sessions = bundles.flatMap((bundle) => bundle.sessions).sort(compareSessions)
+  const requiredBundleTypes = getRequiredBundleTypes(course, section)
   const selectedTypes = new Set(bundles.map((bundle) => bundle.type))
+  const sharedSessions = getSharedSectionBundles(course, section)
+    .filter((bundle) => selectedTypes.has(bundle.type))
+    .flatMap((bundle) => bundle.sessions)
+  const sessions = [...new Map(
+    [...bundles.flatMap((bundle) => bundle.sessions), ...sharedSessions]
+      .map((session) => [session.id, session]),
+  ).values()].sort(compareSessions)
   const teacher = deriveTeacherName(sessions)
 
   return {
@@ -125,7 +156,7 @@ export function buildSelectedConfiguration(
 
 export function buildCourseConfigurations(course: Course): SelectedConfiguration[] {
   return course.sections.flatMap((section) => {
-    const bundles = getSectionBundles(section)
+    const bundles = getSectionBundles(course, section)
     const bundlesByType = new Map<string, SessionBundle[]>()
 
     for (const bundle of bundles) {
